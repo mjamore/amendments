@@ -3,7 +3,7 @@
 
 		var $answers = $('.answers'),
 			$overlay = $('.overlay'),
-			$message = $overlay.find('.message');
+			$message = $overlay.find('.message h1');
 		var INITIAL_MODEL_LENGTH = model.length;
 		var totalCount = 0;
 		var currentScore = 0;
@@ -52,26 +52,20 @@
 				var number = 0;
 				var validateRandomNum = function() {
 					var number = getRandomNum1to27();
-					console.log('questionModel.correct_num: ' + questionModel.correct_num);
 					if(number === 0 || number === questionModel.correct_num)
 					{
-						console.log('shit was ' + number + ' homie');
 						number = validateRandomNum();
 					}
 					for(var i = 0; i < randomNumbers.length; i++)
 					{
-						// console.log('number: ' + number);
-						// console.log('randomNumbers[i]: ' + randomNumbers[i]);
 						if( romanize(number) == randomNumbers[i] )
 						{
-							console.log('number matched answer: ' + romanize(number) + ' === ' + randomNumbers[i]);
 							number = validateRandomNum();
 						}
 					}
 					return number;
 				}
 				number = validateRandomNum();
-				console.log('number: ' + number);
 
 				// push random number into array, as roman numberal
 				randomNumbers.push(romanize(number));
@@ -218,6 +212,14 @@
 			$overlay.fadeIn();
 			setTimeout(function() {
 				$overlay.fadeOut();
+
+				console.log('totalCount: ' + totalCount);
+				if(totalCount === INITIAL_MODEL_LENGTH)
+				{
+					// display end screen and restart button
+					displayEndScreen();
+				}
+
 				setTimeout(function() {
 					questionModel = generateQuestion();
 					renderQuestion(questionModel);
@@ -232,6 +234,11 @@
 		});
 
 
+		var displayEndScreen = function() {
+			$overlay.fadeIn();
+			$message.removeClass('correct').addClass('incorrect').text('Game Over!');
+			$message.next().removeClass('hide');
+		}
 		
 	});
 })();
