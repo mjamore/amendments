@@ -12,11 +12,39 @@
 <body>
 
 	<div class="container">
-		<h1>Check It</h1>
+		<div class="wrapper col-md-8 col-md-offset-2">
+			<h1 class="title">U.S. Amendments Quiz</h1>
+
+			<h3 class="score">Score: <span class="current-score">0</span></h3>
+
+			<h3 class="question-counter">Question <span class="current-question"></span>/<span class="total-amendments"></span></h3>
+
+			<div class="row">
+				<h3 class="question">Which amendment is described below?</h3>
+			</div>
+
+			<div class="row">
+				<h3 class="amendment-description"></h3>
+			</div>
+
+			<div class="row">
+				<div class="answers">
+					<a class="a btn btn-primary btn-block">A: <span></span></a>
+					<a class="b btn btn-primary btn-block">B: <span></span></a>
+					<a class="c btn btn-primary btn-block">C: <span></span></a>
+					<a class="d btn btn-primary btn-block">D: <span></span></a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="overlay">
+		<h1 class="message"></h1>
 	</div>
 
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
+	<script src="js/model.js"></script>
 	<script src="js/script.js"></script>
 
 </body>

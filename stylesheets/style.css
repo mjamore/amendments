@@ -1,0 +1,73 @@
+/*
+* Bootstrap overrides
+*/
+
+.row {
+	margin-left: 0;
+	margin-right: 0;
+}
+
+
+
+
+.title {
+	text-align: center;
+	margin: 50px 0;
+}
+
+.question-counter {
+	display: inline-block;
+}
+
+.score {
+	float: right;
+}
+
+.question {
+	text-align: center;
+	margin: 50px;
+}
+
+.amendment-description,
+.score,
+.question-counter {
+	color: #626262;
+}
+
+.amendment-description {
+	margin-bottom: 50px;
+}
+
+.overlay {
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.8);
+	position: absolute;
+	top: 0;
+	display: none;
+}
+
+.message {
+	padding: 50px;
+	text-align: center;
+	border-radius: 20px;
+	background-color: #000;
+	margin: auto;
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: 50%;
+	max-width: 300px;
+	height: 50%;
+	max-height: 150px;
+}
+
+.correct {
+	color: green;
+}
+
+.incorrect {
+	color: red;
+}
