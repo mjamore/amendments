@@ -1,7 +1,9 @@
 (function() {
 	$(function() {
 
-		var $answers = $('.answers');
+		var $answers = $('.answers'),
+			$overlay = $('.overlay'),
+			$message = $overlay.find('.message');
 		var INITIAL_MODEL_LENGTH = model.length;
 		var totalCount = 0;
 		var currentScore = 0;
@@ -9,23 +11,25 @@
 		$('.total-amendments').text(INITIAL_MODEL_LENGTH);
 
 		/*
-		This will choose a random amendment from the model array. Call once per question
+		This will choose a random amendment from the model array. Call once per question.
 		Returns an amendment object that consists of 'num', 'roman_num', and 'description'.
 		*/
 		var getRandomAmendment = function() {
+			// get random number
 			var randomNum = Math.floor(Math.random()*model.length);
+			// get amendment object from model array
 			var randomAmendment = model[randomNum];
+			// remove amendment object from model array
 			model.splice(randomNum, 1);
+
 			return randomAmendment;
 		}
-		// var amendmentObj = getRandomAmendment();
-		// console.log(amendmentObj);
 
 		/*
 		This will generate random numbers between 1 and 27. This function takes an integer, which is the number of random numbers you'd like returned.
 		Returns an array with the number of random numbers requested.
 		*/
-		var getRandomAmendmentNumbers = function(howManyRandoms) {
+		var getRandomAmendmentNumbers = function(howManyRandoms, questionModel) {
 			var randomNumbers = [];
 
 			var romanize = function(num) {
@@ -42,16 +46,44 @@
 			    return Array(+digits.join("") + 1).join("M") + roman;
 			}
 
+			// loop the number of times the user put in
 			for(var i = 0; i < howManyRandoms; i++)
 			{
-				var number = Math.floor(Math.random()*model.length);
+				var number = 0;
+				var validateRandomNum = function() {
+					var number = getRandomNum1to27();
+					console.log('questionModel.correct_num: ' + questionModel.correct_num);
+					if(number === 0 || number === questionModel.correct_num)
+					{
+						console.log('shit was ' + number + ' homie');
+						number = validateRandomNum();
+					}
+					for(var i = 0; i < randomNumbers.length; i++)
+					{
+						// console.log('number: ' + number);
+						// console.log('randomNumbers[i]: ' + randomNumbers[i]);
+						if( romanize(number) == randomNumbers[i] )
+						{
+							console.log('number matched answer: ' + romanize(number) + ' === ' + randomNumbers[i]);
+							number = validateRandomNum();
+						}
+					}
+					return number;
+				}
+				number = validateRandomNum();
+				console.log('number: ' + number);
+
+				// push random number into array, as roman numberal
 				randomNumbers.push(romanize(number));
 			}
 
 			return randomNumbers;
 		}
-		// var letter = getRandomAmendmentNumbers(3);
-		// console.log(letter);
+
+		// generate random number between 1 and 27
+		var getRandomNum1to27 = function() {
+			return Math.floor(Math.random()*INITIAL_MODEL_LENGTH);
+		}
 
 		/*
 		This will generate the correct answer. Call once per question
@@ -70,12 +102,17 @@
 
 
 		/*
-		This will generate the correct answer. Call once per question
-		Returns either 'A', 'B', 'C', or 'D'
+		This will call the other helper functions to generate random questions.
+		Returns a 'questionsModel' object with properties:
+			- amendment_description
+			- correct_letter
+			- A
+			- B
+			- C
+			- D
 		*/
 		var generateQuestion = function() {
 			// init function for generating questions
-			// call other functions to generate questions parameters
 
 			var setCorrectValue = function() {
 				if(correctLetter === "A") { questionModel.A = amendmentObj.roman_num; }
@@ -87,6 +124,8 @@
 			var questionModel = {
 				"amendment_description" : "",
 				"correct_letter": "",
+				"correct_num": "",
+				"correct_roman": "",
 				"A": "",
 				"B": "",
 				"C": "",
@@ -96,6 +135,8 @@
 			// Call once
 			var amendmentObj = getRandomAmendment();
 			questionModel.amendment_description = amendmentObj.description;
+			questionModel.correct_num = amendmentObj.num;
+			questionModel.correct_roman = amendmentObj.roman_num;
 
 			// Call once
 			var correctLetter = getRandomCorrectLetter();
@@ -103,7 +144,7 @@
 
 			setCorrectValue();
 
-			var incorrectAnswers = getRandomAmendmentNumbers(3);
+			var incorrectAnswers = getRandomAmendmentNumbers(3, questionModel);
 
 			
 			/*
@@ -167,16 +208,16 @@
 		var checkAnswer = function(value) {
 			if( value === questionModel.correct_letter )
 			{
-				$('.message').removeClass('incorrect').addClass('correct').text('Correct!');
+				$message.removeClass('incorrect').addClass('correct').text('Correct!');
 				currentScore++;
 			}
 			else {
-				$('.message').removeClass('correct').addClass('incorrect').text('Incorrect!');
+				$message.removeClass('correct').addClass('incorrect').text('Incorrect!');
 			}
 
-			$('.overlay').fadeIn();
+			$overlay.fadeIn();
 			setTimeout(function() {
-				$('.overlay').fadeOut();
+				$overlay.fadeOut();
 				setTimeout(function() {
 					questionModel = generateQuestion();
 					renderQuestion(questionModel);
